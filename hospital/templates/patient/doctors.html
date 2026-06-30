@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}医生信息 - 医院管理系统{% endblock %}
+<!-- 页面内容结束 -->
+{% block content %}
+<!-- 页面内容开始 -->
+<div class="fade-in">
+    <h4 class="text-white mb-4"><i class="fas fa-user-md me-2"></i>医生信息</h4>
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <select name="department" class="form-select" onchange="this.form.submit()">
+                            <option value="">全部科室</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.name }}" {{ 'selected' if request.args.get('department') == dept.name }}>{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="row g-4">
+                {% for doctor in doctors %}
+                <div class="col-md-6">
+                    <div class="card border">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="stat-icon bg-primary bg-opacity-10 text-primary me-3">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">{{ doctor.name }}</h5>
+                                    <span class="badge bg-primary">{{ doctor.title or '医师' }}</span>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-building me-2"></i>{{ doctor.department or '未分配科室' }}
+                            </p>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-phone me-2"></i>{{ doctor.phone or '暂无联系方式' }}
+                            </p>
+                            {% if doctor.description %}
+                            <p class="text-muted small">{{ doctor.description }}</p>
+                            {% endif %}
+                            <a href="{{ url_for('patient_book_appointment') }}?doctor_id={{ doctor.id }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-calendar-plus me-1"></i>预约挂号
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12">
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-user-md fa-3x mb-3"></i>
+                        <p>暂无医生信息</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- 页面内容结束 -->

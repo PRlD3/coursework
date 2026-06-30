@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}预约挂号 - 医院管理系统{% endblock %}
+<!-- 页面内容结束 -->
+{% block content %}
+<!-- 页面内容开始 -->
+<div class="fade-in">
+    <h4 class="text-white mb-4"><i class="fas fa-calendar-plus me-2"></i>预约挂号</h4>
+    <div class="card">
+        <div class="card-body p-4">
+            <form method="POST" id="bookingForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><i class="fas fa-building me-2"></i>选择科室</label>
+                        <select name="department" id="departmentSelect" class="form-select" onchange="loadDoctors()">
+                            <option value="">请选择科室</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.name }}">{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><i class="fas fa-user-md me-2"></i>选择医生</label>
+                        <select name="doctor_id" id="doctorSelect" class="form-select" required onchange="loadSchedules()">
+                            <option value="">请先选择科室</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}" data-department="{{ doctor.department }}">{{ doctor.name }} - {{ doctor.title or '医师' }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><i class="fas fa-calendar me-2"></i>预约日期</label>
+                        <input type="date" name="appointment_date" id="dateSelect" class="form-control" required onchange="loadSchedules()">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label"><i class="fas fa-clock me-2"></i>预约时段</label>
+                        <select name="time_slot" id="timeSlotSelect" class="form-select" required>
+                            <option value="">请先选择医生和日期</option>
+                            <option value="上午">上午</option>
+                            <option value="下午">下午</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-notes-medical me-2"></i>症状描述</label>
+                    <textarea name="symptom" class="form-control" rows="3" placeholder="请描述您的症状（选填）"></textarea>
+                </div>
+                <div id="scheduleInfo" class="mb-3" style="display:none;">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span id="scheduleText"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-check me-2"></i>确认预约
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- 页面内容结束 -->
+{% block scripts %}
+<script>
+// Filter doctors by department
+document.getElementById('departmentSelect').onchange = function() {
+    var dept = this.value;
+    var select = document.getElementById('doctorSelect');
+    select.innerHTML = '<option value="">请选择医生</option>';
+    {% for doctor in doctors %}
+    if (!dept || '{{ doctor.department }}' == dept) {
+        select.innerHTML += '<option value="{{ doctor.id }}">{{ doctor.name }} - {{ doctor.title or "医师" }}</option>';
+    }
+    {% endfor %}
+    loadSchedules();
+};
+
+function loadSchedules() {
+    var doctorId = document.getElementById('doctorSelect').value;
+    var date = document.getElementById('dateSelect').value;
+    var infoDiv = document.getElementById('scheduleInfo');
+    var scheduleText = document.getElementById('scheduleText');
+    
+    if (doctorId && date) {
+        fetch('/api/schedules?doctor_id=' + doctorId + '&date=' + date)
+            .then(r => r.json())
+            .then(data => {
+                if (data.length > 0) {
+                    var morning = data.find(s => s.time_slot == '上午');
+                    var afternoon = data.find(s => s.time_slot == '下午');
+                    var text = '';
+                    if (morning) text += '上午: ' + morning.current_count + '/' + morning.max_patients + ' ' + (morning.available ? '可预约' : '已满') + ' ';
+                    if (afternoon) text += '下午: ' + afternoon.current_count + '/' + afternoon.max_patients + ' ' + (afternoon.available ? '可预约' : '已满');
+                    if (text) {
+                        scheduleText.textContent = '排班情况：' + text;
+                        infoDiv.style.display = 'block';
+                    } else {
+                        infoDiv.style.display = 'none';
+                    }
+                } else {
+                    scheduleText.textContent = '该医生当天暂无排班';
+                    infoDiv.style.display = 'block';
+                }
+            });
+    } else {
+        infoDiv.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}
+<!-- 页面内容结束 -->

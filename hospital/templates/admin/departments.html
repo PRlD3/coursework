@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}科室管理 - 医院管理系统{% endblock %}
+{% block content %}
+<!-- 页面内容开始 -->
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="text-white"><i class="fas fa-building me-2"></i>科室管理</h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDeptModal">
+            <i class="fas fa-plus me-1"></i>添加科室
+        </button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>科室名称</th>
+                            <th>描述</th>
+                            <th>位置</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dept in departments %}
+                        <tr>
+                            <td>{{ dept.id }}</td>
+                            <td><strong>{{ dept.name }}</strong></td>
+                            <td>{{ dept.description or '无' }}</td>
+                            <td>{{ dept.location or '无' }}</td>
+                            <td>
+                                <a href="{{ url_for('admin_delete_department', id=dept.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('确定删除该科室？')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">暂无科室数据</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加科室模态框 -->
+<div class="modal fade" id="addDeptModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">添加科室</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin_add_department') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">科室名称</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">描述</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">位置</label>
+                        <input type="text" name="location" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

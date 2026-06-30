@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}我的排班 - 医院管理系统{% endblock %}
+<!-- 页面内容结束 -->
+{% block content %}
+<!-- 页面内容开始 -->
+<div class="fade-in">
+    <h4 class="text-white mb-4"><i class="fas fa-calendar-alt me-2"></i>我的排班</h4>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>时段</th>
+                            <th>最大接诊</th>
+                            <th>已预约</th>
+                            <th>剩余</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in schedules %}
+                        <tr>
+                            <td>{{ s.work_date }}</td>
+                            <td><span class="badge bg-info">{{ s.time_slot }}</span></td>
+                            <td>{{ s.max_patients }}</td>
+                            <td>{{ s.current_count }}</td>
+                            <td>{{ s.max_patients - s.current_count }}</td>
+                            <td>
+                                {% if s.current_count >= s.max_patients %}
+                                <span class="badge bg-danger">已满</span>
+                                {% elif s.current_count >= s.max_patients * 0.8 %}
+                                <span class="badge bg-warning">即将满</span>
+                                {% else %}
+                                <span class="badge bg-success">可预约</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">暂无排班数据</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- 页面内容结束 -->

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}注册 - 医院管理系统{% endblock %}
+<!-- 页面内容结束 -->
+{% block content %}
+<!-- 页面内容开始 -->
+<div class="row justify-content-center mt-4 fade-in">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+                    <h3>用户注册</h3>
+                    <p class="text-muted">注册成为医院管理系统用户</p>
+                </div>
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-user me-2"></i>用户名</label>
+                            <input type="text" name="username" class="form-control" required placeholder="请输入用户名">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-user-circle me-2"></i>真实姓名</label>
+                            <input type="text" name="name" class="form-control" required placeholder="请输入真实姓名">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-lock me-2"></i>密码</label>
+                            <input type="password" name="password" class="form-control" required placeholder="请输入密码">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-lock me-2"></i>确认密码</label>
+                            <input type="password" name="confirm_password" class="form-control" required placeholder="请确认密码">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-user-tag me-2"></i>角色</label>
+                            <select name="role" class="form-select" required onchange="togglePatientFields()">
+                                <option value="">请选择角色</option>
+                                <option value="patient">病人</option>
+                                <option value="doctor">医生</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><i class="fas fa-phone me-2"></i>手机号</label>
+                            <input type="text" name="phone" class="form-control" placeholder="请输入手机号">
+                        </div>
+                    </div>
+                    <div id="patientFields" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label"><i class="fas fa-venus-mars me-2"></i>性别</label>
+                                <select name="gender" class="form-select">
+                                    <option value="">请选择</option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label"><i class="fas fa-calendar me-2"></i>年龄</label>
+                                <input type="number" name="age" class="form-control" placeholder="请输入年龄">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label"><i class="fas fa-map-marker-alt me-2"></i>地址</label>
+                                <input type="text" name="address" class="form-control" placeholder="请输入地址">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 btn-lg mt-3">
+                        <i class="fas fa-user-plus me-2"></i>注册
+                    </button>
+                </form>
+                <div class="text-center mt-4">
+                    <p class="text-muted">已有账号？<a href="{{ url_for('login') }}" class="text-primary">立即登录</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- 页面内容结束 -->
+{% block scripts %}
+<script>
+function togglePatientFields() {
+    var role = document.querySelector('select[name="role"]').value;
+    document.getElementById('patientFields').style.display = role === 'patient' ? 'block' : 'none';
+}
+</script>
+{% endblock %}
+<!-- 页面内容结束 -->

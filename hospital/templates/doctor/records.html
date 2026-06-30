@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}病历管理 - 医院管理系统{% endblock %}
+<!-- 页面内容结束 -->
+{% block content %}
+<!-- 页面内容开始 -->
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="text-white"><i class="fas fa-notes-medical me-2"></i>病历管理</h4>
+        <a href="{{ url_for('doctor_add_record') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>新建病历
+        </a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>病人</th>
+                            <th>诊断</th>
+                            <th>处方</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records.items %}
+                        <tr>
+                            <td>{{ record.id }}</td>
+                            <td>{{ record.patient.name if record.patient else '未知' }}</td>
+                            <td>{{ record.diagnosis[:30] + '...' if record.diagnosis|length > 30 else record.diagnosis }}</td>
+                            <td>{{ record.prescription[:30] + '...' if record.prescription and record.prescription|length > 30 else record.prescription or '无' }}</td>
+                            <td>{{ record.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <a href="{{ url_for('doctor_view_record', id=record.id) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> 查看
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">暂无病历记录</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if records.pages > 1 %}
+            <nav class="mt-3">
+                <ul class="pagination justify-content-center">
+                    {% for page_num in records.iter_pages() %}
+                        {% if page_num %}
+                        <li class="page-item {{ 'active' if page_num == records.page }}">
+                            <a class="page-link" href="{{ url_for('doctor_records', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- 页面内容结束 -->

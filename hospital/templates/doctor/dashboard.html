@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}医生工作台 - 医院管理系统{% endblock %}
+<!-- 页面内容结束 -->
+{% block content %}
+<!-- 页面内容开始 -->
+<!-- 仪表盘页面 -->
+<div class="fade-in">
+    <h4 class="text-white mb-4"><i class="fas fa-tachometer-alt me-2"></i>医生工作台</h4>
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1">今日预约</p>
+                        <h3 class="mb-0">{{ today_appointments|length }}</h3>
+                    </div>
+                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1">待处理预约</p>
+                        <h3 class="mb-0">{{ pending_appointments }}</h3>
+                    </div>
+                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1">已完成病历</p>
+                        <h3 class="mb-0">{{ completed_records }}</h3>
+                    </div>
+                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                        <i class="fas fa-notes-medical"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-calendar-check me-2 text-primary"></i>今日预约</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>病人</th>
+                                    <th>时段</th>
+                                    <th>症状</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for apt in today_appointments %}
+                                <tr>
+                                    <td>{{ apt.patient.name if apt.patient else '未知' }}</td>
+                                    <td>{{ apt.time_slot }}</td>
+                                    <td>{{ apt.symptom or '无' }}</td>
+                                    <td>
+                                        {% if apt.status == 'pending' %}
+                                        <span class="badge bg-warning">待确认</span>
+                                        {% elif apt.status == 'confirmed' %}
+                                        <span class="badge bg-info">已确认</span>
+                                        {% elif apt.status == 'completed' %}
+                                        <span class="badge bg-success">已完成</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if apt.status == 'pending' %}
+                                        <a href="{{ url_for('doctor_confirm_appointment', id=apt.id) }}" class="btn btn-sm btn-success">确认</a>
+                                        {% elif apt.status == 'confirmed' %}
+                                        <a href="{{ url_for('doctor_complete_appointment', id=apt.id) }}" class="btn btn-sm btn-primary">完成就诊</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">今日暂无预约</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt me-2 text-primary"></i>本周排班</h5>
+                </div>
+                <div class="card-body">
+                    {% for s in week_schedules %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                        <div>
+                            <strong>{{ s.work_date }}</strong>
+                            <span class="badge bg-info ms-2">{{ s.time_slot }}</span>
+                        </div>
+                        <span class="text-muted">{{ s.current_count }}/{{ s.max_patients }} 人</span>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-4">本周暂无排班</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- 页面内容结束 -->

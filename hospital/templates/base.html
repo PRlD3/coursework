@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 页面头部 -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}医院管理系统{% endblock %}
+<!-- 页面内容结束 --></title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .navbar {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: #667eea !important;
+        }
+        .nav-link {
+            font-weight: 500;
+            color: #555 !important;
+            transition: all 0.3s;
+        }
+        .nav-link:hover {
+            color: #667eea !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+        .btn-success {
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+        }
+        .btn-danger {
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+        }
+        .btn-warning {
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+        }
+        .btn-info {
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+            color: white;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        .footer {
+            background: rgba(255,255,255,0.95);
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+        .badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .page-link {
+            border-radius: 8px !important;
+            margin: 0 3px;
+            color: #667eea;
+        }
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 10px 15px;
+            border: 2px solid #e8e8e8;
+            transition: all 0.3s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+        }
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        .content-wrapper {
+            min-height: calc(100vh - 200px);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<!-- 页面头部结束 -->
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-hospital me-2"></i>医院管理系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                                <i class="fas fa-tachometer-alt me-1"></i>控制台
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-cog me-1"></i>系统管理
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('admin_doctors') }}"><i class="fas fa-user-md me-2"></i>医生管理</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin_patients') }}"><i class="fas fa-user me-2"></i>病人管理</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin_departments') }}"><i class="fas fa-building me-2"></i>科室管理</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin_drugs') }}"><i class="fas fa-pills me-2"></i>药品管理</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin_schedules') }}"><i class="fas fa-calendar-alt me-2"></i>排班管理</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_appointments') }}">
+                                <i class="fas fa-calendar-check me-1"></i>预约管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_medical_records') }}">
+                                <i class="fas fa-notes-medical me-1"></i>病历管理
+                            </a>
+                        </li>
+                        {% elif current_user.role == 'doctor' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('doctor_dashboard') }}">
+                                <i class="fas fa-tachometer-alt me-1"></i>工作台
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('doctor_appointments') }}">
+                                <i class="fas fa-calendar-check me-1"></i>预约管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('doctor_records') }}">
+                                <i class="fas fa-notes-medical me-1"></i>病历管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('doctor_schedule') }}">
+                                <i class="fas fa-calendar-alt me-1"></i>我的排班
+                            </a>
+                        </li>
+                        {% elif current_user.role == 'patient' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('patient_dashboard') }}">
+                                <i class="fas fa-tachometer-alt me-1"></i>我的首页
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('patient_book_appointment') }}">
+                                <i class="fas fa-plus-circle me-1"></i>预约挂号
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('patient_appointments') }}">
+                                <i class="fas fa-calendar-check me-1"></i>我的预约
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('patient_records') }}">
+                                <i class="fas fa-notes-medical me-1"></i>我的病历
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('patient_doctors') }}">
+                                <i class="fas fa-user-md me-1"></i>医生信息
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>{{ current_user.name }}
+                            <span class="badge bg-primary ms-1">{{ current_user.role }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><span class="dropdown-item-text text-muted">{{ current_user.username }}</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>退出登录</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt me-1"></i>登录</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}"><i class="fas fa-user-plus me-1"></i>注册</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 content-wrapper">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}
+<!-- 页面内容开始 -->{% endblock %}
+<!-- 页面内容结束 -->
+    </div>
+
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">
+                <i class="fas fa-hospital me-2"></i>医院管理系统 &copy; 2024 | 
+                <i class="fas fa-code me-1"></i> 数据库课程设计
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    {% block scripts %}{% endblock %}
+<!-- 页面内容结束 -->
+</body>
+</html>

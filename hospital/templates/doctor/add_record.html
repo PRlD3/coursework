@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}新建病历 - 医院管理系统{% endblock %}
+<!-- 页面内容结束 -->
+{% block content %}
+<!-- 页面内容开始 -->
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="text-white"><i class="fas fa-plus-circle me-2"></i>新建病历</h4>
+    </div>
+    <div class="card">
+        <div class="card-body p-4">
+            <form method="POST">
+                {% if appointment %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    为病人 <strong>{{ appointment.patient.name }}</strong> 创建就诊病历
+                    <input type="hidden" name="patient_id" value="{{ appointment.patient_id }}">
+                    <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                </div>
+                {% else %}
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-user me-2"></i>选择病人</label>
+                    <select name="patient_id" class="form-select" required>
+                        <option value="">请选择病人</option>
+                        {% for patient in patients %}
+                        <option value="{{ patient.id }}">{{ patient.name }} ({{ patient.username }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-stethoscope me-2"></i>诊断结果</label>
+                    <textarea name="diagnosis" class="form-control" rows="4" required placeholder="请输入诊断结果"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-prescription me-2"></i>处方</label>
+                    <textarea name="prescription" class="form-control" rows="3" placeholder="请输入处方信息"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-comment me-2"></i>备注</label>
+                    <textarea name="notes" class="form-control" rows="3" placeholder="请输入备注信息"></textarea>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>保存病历
+                    </button>
+                    <a href="{{ url_for('doctor_records') }}" class="btn btn-secondary">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- 页面内容结束 -->
