@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 绿色生活馆</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body>
+    <!-- 顶部工具栏 -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-left">
+                <span>🌿 欢迎来到绿色生活馆！</span>
+            </div>
+            <div class="top-right">
+                <a href="login.html">登录</a>
+                <a href="register.html">注册</a>
+                <a href="orders.html">我的订单</a>
+                <a href="cart.html">购物车</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <header>
+        <div class="container header-main">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🌱</div>
+                <div class="logo-text">绿色<span>生活馆</span></div>
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索环保好物..." id="searchInput">
+                <button onclick="searchProducts()">🔍</button>
+            </div>
+            <div class="header-right">
+                <a href="login.html" class="header-icon" title="我的账户">👤</a>
+                <a href="cart.html" class="header-icon" title="购物车">
+                    🛒
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="../index.html">首页</a></li>
+                <li>
+                    <a href="products.html">所有商品</a>
+                    <div class="dropdown-content">
+                        <a href="products.html?category=eco">环保家居</a>
+                        <a href="products.html?category=kitchen">绿色厨房</a>
+                        <a href="products.html?category=personal">个人护理</a>
+                        <a href="products.html?category=outdoor">户外出行</a>
+                        <a href="products.html?category=office">办公用品</a>
+                    </div>
+                </li>
+                <li><a href="products.html?category=new">新品上市</a></li>
+                <li><a href="products.html?category=hot">热销推荐</a></li>
+                <li><a href="cart.html">购物车</a></li>
+                <li><a href="orders.html">订单管理</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <div class="page-title">
+        <div class="container">
+            <h1>用户注册</h1>
+            <p>加入绿色生活馆，开启环保购物之旅</p>
+        </div>
+    </div>
+
+    <!-- 注册表单 -->
+    <section class="auth-section">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="logo-icon" style="width:60px;height:60px;font-size:30px;margin:0 auto 15px;">🌱</div>
+                <h2>创建账户</h2>
+                <p>填写以下信息完成注册</p>
+            </div>
+            <form class="auth-form" id="registerForm" onsubmit="return validateRegisterForm()">
+                <div class="form-group" id="nameGroup">
+                    <label>👤 用户名</label>
+                    <input type="text" id="regName" placeholder="请输入用户名（2-20个字符）" required>
+                    <div class="error-msg" id="nameError">用户名需为2-20个字符</div>
+                </div>
+                <div class="form-group" id="regEmailGroup">
+                    <label>📧 邮箱地址</label>
+                    <input type="email" id="regEmail" placeholder="请输入您的邮箱" required>
+                    <div class="error-msg" id="regEmailError">请输入有效的邮箱地址</div>
+                </div>
+                <div class="form-group" id="regPasswordGroup">
+                    <label>🔒 密码</label>
+                    <input type="password" id="regPassword" placeholder="请输入密码（至少6位）" required>
+                    <div class="error-msg" id="regPasswordError">密码不能少于6位</div>
+                </div>
+                <div class="form-group" id="confirmGroup">
+                    <label>🔒 确认密码</label>
+                    <input type="password" id="regConfirm" placeholder="请再次输入密码" required>
+                    <div class="error-msg" id="confirmError">两次密码输入不一致</div>
+                </div>
+                <div class="form-options">
+                    <label>
+                        <input type="checkbox" id="agreeCheck" checked> 我已阅读并同意 <a href="#">服务条款</a> 和 <a href="#">隐私政策</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn-submit">注 册</button>
+            </form>
+            <div class="auth-footer">
+                已有账户？<a href="login.html">立即登录</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>关于我们</h3>
+                    <p>绿色生活馆致力于为消费者提供环保、健康、可持续的生活用品。</p>
+                </div>
+                <div class="footer-col">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="products.html">所有商品</a></li>
+                        <li><a href="products.html?category=new">新品上市</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>客户服务</h3>
+                    <ul>
+                        <li><a href="login.html">我的账户</a></li>
+                        <li><a href="orders.html">订单查询</a></li>
+                        <li><a href="cart.html">购物车</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul class="footer-contact">
+                        <li><span>📍</span> 北京市海淀区学院路29号</li>
+                        <li><span>📞</span> 400-888-6666</li>
+                        <li><span>✉️</span> service@greenlife.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 绿色生活馆 Green Life Shop. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // 注册表单验证
+        function validateRegisterForm() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const confirm = document.getElementById('regConfirm').value.trim();
+            const agree = document.getElementById('agreeCheck').checked;
+            let isValid = true;
+
+            // 验证用户名
+            const nameGroup = document.getElementById('nameGroup');
+            if (name.length < 2 || name.length > 20) {
+                nameGroup.classList.add('error');
+                isValid = false;
+            } else {
+                nameGroup.classList.remove('error');
+            }
+
+            // 验证邮箱
+            const emailGroup = document.getElementById('regEmailGroup');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailGroup.classList.add('error');
+                isValid = false;
+            } else {
+                emailGroup.classList.remove('error');
+            }
+
+            // 验证密码
+            const passwordGroup = document.getElementById('regPasswordGroup');
+            if (password.length < 6) {
+                passwordGroup.classList.add('error');
+                isValid = false;
+            } else {
+                passwordGroup.classList.remove('error');
+            }
+
+            // 验证确认密码
+            const confirmGroup = document.getElementById('confirmGroup');
+            if (confirm !== password || confirm === '') {
+                confirmGroup.classList.add('error');
+                isValid = false;
+            } else {
+                confirmGroup.classList.remove('error');
+            }
+
+            // 验证同意条款
+            if (!agree) {
+                alert('请阅读并同意服务条款和隐私政策');
+                isValid = false;
+            }
+
+            if (isValid) {
+                alert('✅ 注册成功！欢迎加入绿色生活馆！');
+                window.location.href = 'login.html';
+            }
+            return false;
+        }
+
+        // 实时验证
+        document.getElementById('regName').addEventListener('input', function() {
+            const val = this.value.trim();
+            if (val.length >= 2 && val.length <= 20) {
+                document.getElementById('nameGroup').classList.remove('error');
+            }
+        });
+
+        document.getElementById('regEmail').addEventListener('input', function() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(this.value.trim())) {
+                document.getElementById('regEmailGroup').classList.remove('error');
+            }
+        });
+
+        document.getElementById('regPassword').addEventListener('input', function() {
+            if (this.value.trim().length >= 6) {
+                document.getElementById('regPasswordGroup').classList.remove('error');
+            }
+        });
+
+        document.getElementById('regConfirm').addEventListener('input', function() {
+            const password = document.getElementById('regPassword').value.trim();
+            if (this.value.trim() === password && this.value.trim() !== '') {
+                document.getElementById('confirmGroup').classList.remove('error');
+            }
+        });
+    </script>
+</body>
+</html>

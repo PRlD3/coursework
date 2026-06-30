@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 绿色生活馆</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body>
+    <!-- 顶部工具栏 -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-left">
+                <span>🌿 欢迎来到绿色生活馆！</span>
+            </div>
+            <div class="top-right">
+                <a href="login.html">登录</a>
+                <a href="register.html">注册</a>
+                <a href="orders.html">我的订单</a>
+                <a href="cart.html">购物车</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <header>
+        <div class="container header-main">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🌱</div>
+                <div class="logo-text">绿色<span>生活馆</span></div>
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索环保好物..." id="searchInput">
+                <button onclick="searchProducts()">🔍</button>
+            </div>
+            <div class="header-right">
+                <a href="login.html" class="header-icon" title="我的账户">👤</a>
+                <a href="cart.html" class="header-icon" title="购物车">
+                    🛒
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="../index.html">首页</a></li>
+                <li>
+                    <a href="products.html">所有商品</a>
+                    <div class="dropdown-content">
+                        <a href="products.html?category=eco">环保家居</a>
+                        <a href="products.html?category=kitchen">绿色厨房</a>
+                        <a href="products.html?category=personal">个人护理</a>
+                        <a href="products.html?category=outdoor">户外出行</a>
+                        <a href="products.html?category=office">办公用品</a>
+                    </div>
+                </li>
+                <li><a href="products.html?category=new">新品上市</a></li>
+                <li><a href="products.html?category=hot">热销推荐</a></li>
+                <li><a href="cart.html">购物车</a></li>
+                <li><a href="orders.html" class="active">订单管理</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <div class="page-title">
+        <div class="container">
+            <h1>订单管理</h1>
+            <p>查看和管理您的所有订单</p>
+        </div>
+    </div>
+
+    <!-- 面包屑 -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a>
+            <span>›</span>
+            <span>订单管理</span>
+        </div>
+    </div>
+
+    <!-- 订单内容 -->
+    <section class="orders-section container">
+        <!-- 订单标签 -->
+        <div class="order-tabs">
+            <button class="active" onclick="filterOrders('all', this)">全部订单</button>
+            <button onclick="filterOrders('pending', this)">待发货</button>
+            <button onclick="filterOrders('shipped', this)">配送中</button>
+            <button onclick="filterOrders('completed', this)">已完成</button>
+        </div>
+        <div id="ordersContent">
+            <!-- 由JavaScript动态生成 -->
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>关于我们</h3>
+                    <p>绿色生活馆致力于为消费者提供环保、健康、可持续的生活用品。</p>
+                </div>
+                <div class="footer-col">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="products.html">所有商品</a></li>
+                        <li><a href="products.html?category=new">新品上市</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>客户服务</h3>
+                    <ul>
+                        <li><a href="login.html">我的账户</a></li>
+                        <li><a href="orders.html">订单查询</a></li>
+                        <li><a href="cart.html">购物车</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul class="footer-contact">
+                        <li><span>📍</span> 北京市海淀区学院路29号</li>
+                        <li><span>📞</span> 400-888-6666</li>
+                        <li><span>✉️</span> service@greenlife.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 绿色生活馆 Green Life Shop. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // 获取订单数据
+        function getOrders() {
+            return JSON.parse(localStorage.getItem('greenLifeOrders')) || [];
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const map = {
+                'pending': '待发货',
+                'shipped': '配送中',
+                'completed': '已完成'
+            };
+            return map[status] || '未知';
+        }
+
+        // 渲染订单
+        function renderOrders(filter = 'all') {
+            const container = document.getElementById('ordersContent');
+            if (!container) return;
+
+            let orders = getOrders();
+
+            if (filter !== 'all') {
+                orders = orders.filter(o => o.status === filter);
+            }
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="orders-empty">
+                        <span class="empty-icon">📦</span>
+                        <h3>暂无订单</h3>
+                        <p>您还没有任何订单，快去选购环保好物吧！</p>
+                        <a href="products.html" class="btn btn-primary">去购物</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            orders.forEach(order => {
+                const statusClass = order.status;
+                let itemsHtml = '';
+                order.items.forEach(item => {
+                    itemsHtml += `
+                        <div class="order-item">
+                            <img src="${item.image}" alt="${item.name}">
+                            <div class="item-info">
+                                <h4>${item.name}</h4>
+                                <p>数量：${item.quantity}</p>
+                            </div>
+                            <div class="item-price">¥${(item.price * item.quantity).toFixed(1)}</div>
+                        </div>
+                    `;
+                });
+
+                let actionButtons = '';
+                if (order.status === 'pending') {
+                    actionButtons = `
+                        <button class="btn btn-danger" onclick="cancelOrder('${order.id}')">取消订单</button>
+                    `;
+                } else if (order.status === 'shipped') {
+                    actionButtons = `
+                        <button class="btn btn-primary" onclick="confirmOrder('${order.id}')">确认收货</button>
+                    `;
+                } else if (order.status === 'completed') {
+                    actionButtons = `
+                        <button class="btn btn-secondary" onclick="showToast('已提交评价，感谢您的反馈！')">评价</button>
+                        <button class="btn btn-secondary" onclick="showToast('已提交退换货申请')">退换货</button>
+                    `;
+                }
+
+                html += `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <span>📋 订单号：${order.id}</span>
+                                <span>📅 ${order.date}</span>
+                                <span>📍 ${order.address}</span>
+                            </div>
+                            <span class="order-status ${statusClass}">${getStatusText(order.status)}</span>
+                        </div>
+                        <div class="order-body">
+                            ${itemsHtml}
+                        </div>
+                        <div class="order-footer">
+                            <div class="order-total">
+                                共 ${order.items.reduce((s, i) => s + i.quantity, 0)} 件商品，合计：<strong>¥${order.total.toFixed(1)}</strong>
+                            </div>
+                            <div class="order-actions">
+                                ${actionButtons}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 筛选订单
+        function filterOrders(filter, btn) {
+            document.querySelectorAll('.order-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderOrders(filter);
+        }
+
+        // 取消订单
+        function cancelOrder(orderId) {
+            if (confirm('确定要取消订单 ' + orderId + ' 吗？')) {
+                let orders = getOrders();
+                orders = orders.filter(o => o.id !== orderId);
+                localStorage.setItem('greenLifeOrders', JSON.stringify(orders));
+                renderOrders(document.querySelector('.order-tabs button.active').textContent === '全部订单' ? 'all' : 
+                    document.querySelector('.order-tabs button.active').textContent === '待发货' ? 'pending' :
+                    document.querySelector('.order-tabs button.active').textContent === '配送中' ? 'shipped' : 'completed');
+                showToast('订单已取消');
+            }
+        }
+
+        // 确认收货
+        function confirmOrder(orderId) {
+            if (confirm('确认已收到商品吗？')) {
+                let orders = getOrders();
+                const order = orders.find(o => o.id === orderId);
+                if (order) {
+                    order.status = 'completed';
+                    localStorage.setItem('greenLifeOrders', JSON.stringify(orders));
+                    renderOrders(document.querySelector('.order-tabs button.active').textContent === '全部订单' ? 'all' : 
+                        document.querySelector('.order-tabs button.active').textContent === '待发货' ? 'pending' :
+                        document.querySelector('.order-tabs button.active').textContent === '配送中' ? 'shipped' : 'completed');
+                    showToast('✅ 已确认收货，感谢您的购买！');
+                }
+            }
+        }
+
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            renderOrders('all');
+        });
+    </script>
+</body>
+</html>

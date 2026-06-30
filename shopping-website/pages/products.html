@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>所有商品 - 绿色生活馆</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body>
+    <!-- 顶部工具栏 -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-left">
+                <span>🌿 欢迎来到绿色生活馆！</span>
+            </div>
+            <div class="top-right">
+                <a href="login.html">登录</a>
+                <a href="register.html">注册</a>
+                <a href="orders.html">我的订单</a>
+                <a href="cart.html">购物车</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <header>
+        <div class="container header-main">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🌱</div>
+                <div class="logo-text">绿色<span>生活馆</span></div>
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索环保好物..." id="searchInput">
+                <button onclick="searchProducts()">🔍</button>
+            </div>
+            <div class="header-right">
+                <a href="login.html" class="header-icon" title="我的账户">👤</a>
+                <a href="cart.html" class="header-icon" title="购物车">
+                    🛒
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="../index.html">首页</a></li>
+                <li>
+                    <a href="products.html" class="active">所有商品</a>
+                    <div class="dropdown-content">
+                        <a href="products.html?category=eco">环保家居</a>
+                        <a href="products.html?category=kitchen">绿色厨房</a>
+                        <a href="products.html?category=personal">个人护理</a>
+                        <a href="products.html?category=outdoor">户外出行</a>
+                        <a href="products.html?category=office">办公用品</a>
+                    </div>
+                </li>
+                <li><a href="products.html?category=new">新品上市</a></li>
+                <li><a href="products.html?category=hot">热销推荐</a></li>
+                <li><a href="cart.html">购物车</a></li>
+                <li><a href="orders.html">订单管理</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <div class="page-title">
+        <div class="container">
+            <h1>所有商品</h1>
+            <p>精选环保好物，守护绿色家园</p>
+        </div>
+    </div>
+
+    <!-- 面包屑 -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a>
+            <span>›</span>
+            <span>所有商品</span>
+        </div>
+    </div>
+
+    <!-- 商品展示区域 -->
+    <section class="container">
+        <div class="products-layout">
+            <!-- 筛选侧边栏 -->
+            <aside class="filter-sidebar">
+                <h3>商品筛选</h3>
+                <div class="filter-group">
+                    <h4>商品分类</h4>
+                    <label><input type="checkbox" value="eco" onchange="filterProducts()"> 环保家居</label>
+                    <label><input type="checkbox" value="kitchen" onchange="filterProducts()"> 绿色厨房</label>
+                    <label><input type="checkbox" value="personal" onchange="filterProducts()"> 个人护理</label>
+                    <label><input type="checkbox" value="outdoor" onchange="filterProducts()"> 户外出行</label>
+                    <label><input type="checkbox" value="office" onchange="filterProducts()"> 办公用品</label>
+                </div>
+                <div class="filter-group">
+                    <h4>价格区间</h4>
+                    <div class="price-range">
+                        <input type="number" id="priceMin" placeholder="¥ 最低" min="0" onchange="filterProducts()">
+                        <span>-</span>
+                        <input type="number" id="priceMax" placeholder="¥ 最高" min="0" onchange="filterProducts()">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <h4>商品标签</h4>
+                    <label><input type="checkbox" value="hot" onchange="filterProducts()"> 🔥 热销商品</label>
+                    <label><input type="checkbox" value="new" onchange="filterProducts()"> 🌟 新品上市</label>
+                </div>
+                <button class="btn btn-primary" style="width:100%;" onclick="resetFilters()">重置筛选</button>
+            </aside>
+
+            <!-- 商品列表 -->
+            <div class="products-main">
+                <div class="products-toolbar">
+                    <div class="result-count">共找到 <strong id="resultCount">20</strong> 件商品</div>
+                    <div class="sort-options">
+                        <button class="active" onclick="sortProducts('default')">默认</button>
+                        <button onclick="sortProducts('price-asc')">价格 ↑</button>
+                        <button onclick="sortProducts('price-desc')">价格 ↓</button>
+                        <button onclick="sortProducts('sales')">销量</button>
+                        <button onclick="sortProducts('rating')">评分</button>
+                    </div>
+                </div>
+                <div class="product-grid" id="productList">
+                    <!-- 由JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>关于我们</h3>
+                    <p>绿色生活馆致力于为消费者提供环保、健康、可持续的生活用品。</p>
+                </div>
+                <div class="footer-col">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="products.html">所有商品</a></li>
+                        <li><a href="products.html?category=new">新品上市</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>客户服务</h3>
+                    <ul>
+                        <li><a href="login.html">我的账户</a></li>
+                        <li><a href="orders.html">订单查询</a></li>
+                        <li><a href="cart.html">购物车</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul class="footer-contact">
+                        <li><span>📍</span> 北京市海淀区学院路29号</li>
+                        <li><span>📞</span> 400-888-6666</li>
+                        <li><span>✉️</span> service@greenlife.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 绿色生活馆 Green Life Shop. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // 当前筛选和排序状态
+        let currentSort = 'default';
+        let filteredProducts = [...products];
+
+        // 获取URL参数
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                category: params.get('category'),
+                search: params.get('search')
+            };
+        }
+
+        // 渲染商品列表
+        function renderProductList() {
+            const container = document.getElementById('productList');
+            const countEl = document.getElementById('resultCount');
+            if (!container) return;
+
+            container.innerHTML = filteredProducts.map(p => generateProductCard(p)).join('');
+            if (countEl) countEl.textContent = filteredProducts.length;
+        }
+
+        // 筛选商品
+        function filterProducts() {
+            const checkedCategories = Array.from(document.querySelectorAll('.filter-sidebar input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+
+            const priceMin = parseFloat(document.getElementById('priceMin')?.value) || 0;
+            const priceMax = parseFloat(document.getElementById('priceMax')?.value) || Infinity;
+
+            filteredProducts = products.filter(p => {
+                // 分类筛选
+                if (checkedCategories.length > 0 && !checkedCategories.includes(p.category) && !checkedCategories.includes(p.badge)) {
+                    return false;
+                }
+                // 价格筛选
+                if (p.price < priceMin || p.price > priceMax) {
+                    return false;
+                }
+                return true;
+            });
+
+            // 应用排序
+            applySort();
+            renderProductList();
+        }
+
+        // 排序
+        function sortProducts(type) {
+            currentSort = type;
+            // 更新按钮状态
+            document.querySelectorAll('.sort-options button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            applySort();
+            renderProductList();
+        }
+
+        function applySort() {
+            switch (currentSort) {
+                case 'price-asc':
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'sales':
+                    filteredProducts.sort((a, b) => b.sales - a.sales);
+                    break;
+                case 'rating':
+                    filteredProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+                default:
+                    filteredProducts.sort((a, b) => a.id - b.id);
+            }
+        }
+
+        // 重置筛选
+        function resetFilters() {
+            document.querySelectorAll('.filter-sidebar input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('priceMin').value = '';
+            document.getElementById('priceMax').value = '';
+            filteredProducts = [...products];
+            currentSort = 'default';
+            document.querySelectorAll('.sort-options button').forEach((btn, i) => {
+                btn.classList.toggle('active', i === 0);
+            });
+            renderProductList();
+        }
+
+        // 页面加载初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = getUrlParams();
+
+            // 根据URL参数筛选
+            if (params.category && params.category !== 'all') {
+                if (params.category === 'hot' || params.category === 'new') {
+                    filteredProducts = products.filter(p => p.badge === params.category);
+                } else {
+                    filteredProducts = products.filter(p => p.category === params.category);
+                }
+                // 勾选对应分类
+                document.querySelectorAll('.filter-sidebar input[type="checkbox"]').forEach(cb => {
+                    if (cb.value === params.category || cb.value === params.category) {
+                        cb.checked = true;
+                    }
+                });
+            }
+
+            if (params.search) {
+                const keyword = params.search.toLowerCase();
+                filteredProducts = products.filter(p => 
+                    p.name.toLowerCase().includes(keyword) || 
+                    p.desc.toLowerCase().includes(keyword)
+                );
+            }
+
+            renderProductList();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情 - 绿色生活馆</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body>
+    <!-- 顶部工具栏 -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-left">
+                <span>🌿 欢迎来到绿色生活馆！</span>
+            </div>
+            <div class="top-right">
+                <a href="login.html">登录</a>
+                <a href="register.html">注册</a>
+                <a href="orders.html">我的订单</a>
+                <a href="cart.html">购物车</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <header>
+        <div class="container header-main">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🌱</div>
+                <div class="logo-text">绿色<span>生活馆</span></div>
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索环保好物..." id="searchInput">
+                <button onclick="searchProducts()">🔍</button>
+            </div>
+            <div class="header-right">
+                <a href="login.html" class="header-icon" title="我的账户">👤</a>
+                <a href="cart.html" class="header-icon" title="购物车">
+                    🛒
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="../index.html">首页</a></li>
+                <li>
+                    <a href="products.html">所有商品</a>
+                    <div class="dropdown-content">
+                        <a href="products.html?category=eco">环保家居</a>
+                        <a href="products.html?category=kitchen">绿色厨房</a>
+                        <a href="products.html?category=personal">个人护理</a>
+                        <a href="products.html?category=outdoor">户外出行</a>
+                        <a href="products.html?category=office">办公用品</a>
+                    </div>
+                </li>
+                <li><a href="products.html?category=new">新品上市</a></li>
+                <li><a href="products.html?category=hot">热销推荐</a></li>
+                <li><a href="cart.html">购物车</a></li>
+                <li><a href="orders.html">订单管理</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 面包屑 -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a>
+            <span>›</span>
+            <a href="products.html">所有商品</a>
+            <span>›</span>
+            <span id="breadcrumbName">商品详情</span>
+        </div>
+    </div>
+
+    <!-- 商品详情 -->
+    <section class="container">
+        <div class="product-detail" id="productDetail">
+            <!-- 由JavaScript动态生成 -->
+        </div>
+
+        <!-- 商品描述区域 -->
+        <div class="detail-description">
+            <div class="detail-tabs">
+                <button class="active" onclick="switchTab(this, 'desc')">商品描述</button>
+                <button onclick="switchTab(this, 'specs')">规格参数</button>
+                <button onclick="switchTab(this, 'reviews')">用户评价</button>
+            </div>
+            <div class="detail-content" id="detailContent">
+                <!-- 由JavaScript动态生成 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>关于我们</h3>
+                    <p>绿色生活馆致力于为消费者提供环保、健康、可持续的生活用品。</p>
+                </div>
+                <div class="footer-col">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="products.html">所有商品</a></li>
+                        <li><a href="products.html?category=new">新品上市</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>客户服务</h3>
+                    <ul>
+                        <li><a href="login.html">我的账户</a></li>
+                        <li><a href="orders.html">订单查询</a></li>
+                        <li><a href="cart.html">购物车</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>联系我们</h3>
+                    <ul class="footer-contact">
+                        <li><span>📍</span> 北京市海淀区学院路29号</li>
+                        <li><span>📞</span> 400-888-6666</li>
+                        <li><span>✉️</span> service@greenlife.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 绿色生活馆 Green Life Shop. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // 获取商品ID
+        function getProductId() {
+            const params = new URLSearchParams(window.location.search);
+            return parseInt(params.get('id')) || 1;
+        }
+
+        // 渲染商品详情
+        function renderProductDetail() {
+            const id = getProductId();
+            const product = products.find(p => p.id === id);
+            if (!product) {
+                document.getElementById('productDetail').innerHTML = '<p style="text-align:center;padding:50px;font-size:18px;">商品不存在</p>';
+                return;
+            }
+
+            // 更新面包屑
+            document.getElementById('breadcrumbName').textContent = product.name;
+
+            const discount = Math.round((1 - product.price / product.originalPrice) * 100);
+            const stars = '★'.repeat(Math.floor(product.rating)) + (product.rating % 1 >= 0.5 ? '½' : '');
+
+            const html = `
+                <div class="product-detail-images">
+                    <img src="${product.image}" alt="${product.name}" class="product-detail-main-image" id="mainImage">
+                    <div class="product-detail-thumbs">
+                        <img src="${product.image}" alt="" class="active" onclick="changeImage(this, '${product.image}')">
+                        <img src="https://picsum.photos/seed/${product.id}a/400/400" alt="" onclick="changeImage(this, 'https://picsum.photos/seed/${product.id}a/400/400')">
+                        <img src="https://picsum.photos/seed/${product.id}b/400/400" alt="" onclick="changeImage(this, 'https://picsum.photos/seed/${product.id}b/400/400')">
+                        <img src="https://picsum.photos/seed/${product.id}c/400/400" alt="" onclick="changeImage(this, 'https://picsum.photos/seed/${product.id}c/400/400')">
+                    </div>
+                </div>
+                <div class="product-detail-info">
+                    <h1>${product.name}</h1>
+                    <p class="detail-desc">${product.desc}</p>
+                    <div class="detail-price">
+                        <span class="current">¥${product.price.toFixed(1)}</span>
+                        <span class="original">¥${product.originalPrice.toFixed(1)}</span>
+                        <span class="discount">省${discount}%</span>
+                    </div>
+                    <div class="detail-meta">
+                        <div class="meta-item">
+                            <strong>评分</strong>
+                            <span class="stars" style="color:#ffc107;">${stars}</span>
+                            <span>${product.rating}分</span>
+                        </div>
+                        <div class="meta-item">
+                            <strong>销量</strong>
+                            <span>已售 ${product.sales} 件</span>
+                        </div>
+                        <div class="meta-item">
+                            <strong>分类</strong>
+                            <span>${getCategoryName(product.category)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <strong>配送</strong>
+                            <span>🚚 绿色配送，满99元包邮</span>
+                        </div>
+                        <div class="meta-item">
+                            <strong>售后</strong>
+                            <span>🔄 7天无理由退换货</span>
+                        </div>
+                    </div>
+                    <div class="detail-quantity">
+                        <label>数量：</label>
+                        <div class="quantity-control">
+                            <button onclick="changeQuantity(-1)">−</button>
+                            <input type="text" id="quantityInput" value="1" readonly>
+                            <button onclick="changeQuantity(1)">+</button>
+                        </div>
+                        <span style="font-size:13px;color:var(--text-light);">库存充足</span>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="btn btn-primary" onclick="addToCartFromDetail(${product.id})">加入购物车</button>
+                        <button class="btn btn-buy" onclick="buyNow(${product.id})">立即购买</button>
+                        <button class="btn btn-secondary" onclick="toggleFavorite(this)">♡ 收藏</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('productDetail').innerHTML = html;
+
+            // 渲染描述内容
+            renderTabContent('desc', product);
+        }
+
+        // 获取分类名称
+        function getCategoryName(category) {
+            const map = {
+                'eco': '环保家居',
+                'kitchen': '绿色厨房',
+                'personal': '个人护理',
+                'outdoor': '户外出行',
+                'office': '办公用品'
+            };
+            return map[category] || '其他';
+        }
+
+        // 切换图片
+        function changeImage(el, src) {
+            document.getElementById('mainImage').src = src;
+            document.querySelectorAll('.product-detail-thumbs img').forEach(img => img.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // 修改数量
+        function changeQuantity(delta) {
+            const input = document.getElementById('quantityInput');
+            let val = parseInt(input.value) + delta;
+            if (val < 1) val = 1;
+            if (val > 99) val = 99;
+            input.value = val;
+        }
+
+        // 从详情页加入购物车
+        function addToCartFromDetail(productId) {
+            const qty = parseInt(document.getElementById('quantityInput').value);
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: qty
+                });
+            }
+            saveCart();
+            showToast('✅ 已添加 ' + qty + ' 件「' + product.name + '」到购物车');
+        }
+
+        // 立即购买
+        function buyNow(productId) {
+            const qty = parseInt(document.getElementById('quantityInput').value);
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            // 清空购物车并添加当前商品
+            cart = [];
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: qty
+            });
+            saveCart();
+            window.location.href = 'cart.html';
+        }
+
+        // 切换标签
+        function switchTab(btn, tab) {
+            document.querySelectorAll('.detail-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const id = getProductId();
+            const product = products.find(p => p.id === id);
+            if (product) {
+                renderTabContent(tab, product);
+            }
+        }
+
+        // 渲染标签内容
+        function renderTabContent(tab, product) {
+            const container = document.getElementById('detailContent');
+            switch (tab) {
+                case 'desc':
+                    container.innerHTML = `
+                        <h3 style="color:var(--primary-dark);margin-bottom:15px;">🌿 产品描述</h3>
+                        <p>${product.desc}</p>
+                        <p>绿色生活馆精选的每一件商品都经过严格的环保检测，确保从原材料到生产加工的全过程都符合环保标准。我们致力于为消费者提供健康、可持续的生活方式选择。</p>
+                        <h4 style="color:var(--primary-dark);margin:20px 0 10px;">产品特点</h4>
+                        <ul style="padding-left:20px;list-style:disc;">
+                            <li>环保材质：采用可降解/可回收材料制作</li>
+                            <li>安全无害：通过SGS环保检测认证</li>
+                            <li>耐用设计：精心设计，延长使用寿命</li>
+                            <li>简约包装：减少过度包装，降低环境负担</li>
+                        </ul>
+                        <h4 style="color:var(--primary-dark);margin:20px 0 10px;">使用说明</h4>
+                        <p>请按照产品说明进行使用和保养，以延长产品使用寿命。如有任何疑问，请联系我们的客服团队。</p>
+                    `;
+                    break;
+                case 'specs':
+                    container.innerHTML = `
+                        <h3 style="color:var(--primary-dark);margin-bottom:15px;">📋 规格参数</h3>
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="background:#f5f5f5;"><td style="padding:10px 15px;border:1px solid #e0e0e0;font-weight:500;">商品名称</td><td style="padding:10px 15px;border:1px solid #e0e0e0;">${product.name}</td></tr>
+                            <tr><td style="padding:10px 15px;border:1px solid #e0e0e0;font-weight:500;">商品分类</td><td style="padding:10px 15px;border:1px solid #e0e0e0;">${getCategoryName(product.category)}</td></tr>
+                            <tr style="background:#f5f5f5;"><td style="padding:10px 15px;border:1px solid #e0e0e0;font-weight:500;">商品材质</td><td style="padding:10px 15px;border:1px solid #e0e0e0;">环保可降解材料</td></tr>
+                            <tr><td style="padding:10px 15px;border:1px solid #e0e0e0;font-weight:500;">环保认证</td><td style="padding:10px 15px;border:1px solid #e0e0e0;">SGS / FSC / 中国环境标志</td></tr>
+                            <tr style="background:#f5f5f5;"><td style="padding:10px 15px;border:1px solid #e0e0e0;font-weight:500;">包装方式</td><td style="padding:10px 15px;border:1px solid #e0e0e0;">简约环保包装</td></tr>
+                            <tr><td style="padding:10px 15px;border:1px solid #e0e0e0;font-weight:500;">产地</td><td style="padding:10px 15px;border:1px solid #e0e0e0;">中国</td></tr>
+                        </table>
+                    `;
+                    break;
+                case 'reviews':
+                    container.innerHTML = `
+                        <h3 style="color:var(--primary-dark);margin-bottom:15px;">💬 用户评价</h3>
+                        <div style="padding:20px;background:#f9f9f9;border-radius:8px;margin-bottom:15px;">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                <strong>张***</strong>
+                                <span style="color:#ffc107;">★★★★★</span>
+                                <span style="font-size:12px;color:#999;">2026-05-10</span>
+                            </div>
+                            <p style="font-size:14px;">质量很好，环保材质用着放心，包装也很简约，支持环保！</p>
+                        </div>
+                        <div style="padding:20px;background:#f9f9f9;border-radius:8px;margin-bottom:15px;">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                <strong>李***</strong>
+                                <span style="color:#ffc107;">★★★★★</span>
+                                <span style="font-size:12px;color:#999;">2026-05-08</span>
+                            </div>
+                            <p style="font-size:14px;">第二次购买了，品质一如既往的好，推荐给朋友们了。</p>
+                        </div>
+                        <div style="padding:20px;background:#f9f9f9;border-radius:8px;margin-bottom:15px;">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                <strong>王***</strong>
+                                <span style="color:#ffc107;">★★★★☆</span>
+                                <span style="font-size:12px;color:#999;">2026-05-05</span>
+                            </div>
+                            <p style="font-size:14px;">整体不错，物流很快，包装很环保，会继续支持。</p>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProductDetail();
+        });
+    </script>
+</body>
+</html>
